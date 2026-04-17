@@ -12,7 +12,11 @@ export interface LegalResponse {
   legal_summary: string;
   laws: string[];
   complaint_letter: string;
+  complaint_letter_local?: string;
+  complaint_letter_english?: string;
   chat_response: string;
+  chat_response_local?: string;
+  chat_response_english?: string;
 }
 
 export interface UserContext {

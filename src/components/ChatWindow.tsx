@@ -154,18 +154,50 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, isLoading, onS
                 {message.role === 'user' ? <User className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5" />}
               </div>
               
-              <div className={`max-w-[80%] rounded-2xl p-4 ${
-                message.role === 'user' 
-                  ? 'bg-slate-100 text-slate-800 rounded-tr-none' 
-                  : 'bg-white border border-slate-100 chat-shadow text-slate-800 rounded-tl-none'
-              }`}>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                  {message.content}
-                </p>
-                <span className="text-[10px] text-slate-400 mt-2 block opacity-50">
-                  {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
+               <div className={`max-w-[80%] rounded-2xl p-4 ${
+                 message.role === 'user' 
+                   ? 'bg-slate-100 text-slate-800 rounded-tr-none' 
+                   : 'bg-white border border-slate-100 chat-shadow text-slate-800 rounded-tl-none'
+               }`}>
+                 {message.legalData ? (
+                   message.legalData.chat_response_local && message.legalData.chat_response_english ? (
+                     <>
+                       <p className="text-sm leading-relaxed whitespace-pre-wrap mb-3">
+                         {message.legalData.chat_response_local}
+                       </p>
+                       <div className="border-t border-slate-200 pt-3 mt-2">
+                         <p className="text-xs font-semibold text-slate-500 mb-1">English</p>
+                         <p className="text-sm leading-relaxed whitespace-pre-wrap text-slate-600">
+                           {message.legalData.chat_response_english}
+                         </p>
+                       </div>
+                     </>
+                   ) : message.content.includes('---') ? (
+                     <>
+                       <p className="text-sm leading-relaxed whitespace-pre-wrap mb-3">
+                         {message.content.split('---')[0].trim()}
+                       </p>
+                       <div className="border-t border-slate-200 pt-3 mt-2">
+                         <p className="text-xs font-semibold text-slate-500 mb-1">English</p>
+                         <p className="text-sm leading-relaxed whitespace-pre-wrap text-slate-600">
+                           {message.content.split('---')[1].trim()}
+                         </p>
+                       </div>
+                     </>
+                   ) : (
+                     <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                       {message.content}
+                     </p>
+                   )
+                 ) : (
+                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                     {message.content}
+                   </p>
+                 )}
+                 <span className="text-[10px] text-slate-400 mt-2 block opacity-50">
+                   {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                 </span>
+               </div>
             </motion.div>
           ))}
         </AnimatePresence>
