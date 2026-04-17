@@ -20,7 +20,7 @@ export interface UserContext {
   industry: string;
   employment_type: string;
   user_language: string;
-  provider: 'gemini' | 'ollama' | 'ollama-1b';
+  provider: 'gemini' | 'ollama' | 'ollama-1b' | 'groq';
   original_input: string;
   translated_input: string;
 }

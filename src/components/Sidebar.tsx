@@ -106,22 +106,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ context, setContext, onClose }
         </div>
 
         <div className="space-y-4 pt-4 border-t border-slate-100">
-          <label className="flex items-center justify-between text-sm font-bold text-legal-secondary uppercase tracking-wider">
-            <span>AI Provider</span>
-             <span className={`text-[10px] px-2 py-0.5 rounded-full ${context.provider === 'ollama' || context.provider === 'ollama-1b' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
-               {context.provider === 'ollama' ? 'Local (3B)' : context.provider === 'ollama-1b' ? 'Local (1B)' : 'Cloud'}
-             </span>
-          </label>
-           <select
-             name="provider"
-             value={context.provider}
-             onChange={handleChange}
-             className="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm font-semibold focus:ring-2 focus:ring-legal-primary focus:border-transparent transition-all"
-           >
-             <option value="gemini">Google Gemini (Default)</option>
-             <option value="ollama">Local Ollama (Llama 3.2:3b)</option>
-             <option value="ollama-1b">Local Ollama (Llama 3.2:1b) - Fastest</option>
-           </select>
+           <label className="flex items-center justify-between text-sm font-bold text-legal-secondary uppercase tracking-wider">
+             <span>AI Provider</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full ${context.provider === 'ollama' || context.provider === 'ollama-1b' ? 'bg-orange-100 text-orange-600' : context.provider === 'groq' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
+                {context.provider === 'ollama' ? 'Local (3B)' : context.provider === 'ollama-1b' ? 'Local (1B)' : context.provider === 'groq' ? 'Groq (Fast)' : 'Cloud'}
+              </span>
+           </label>
+            <select
+              name="provider"
+              value={context.provider}
+              onChange={handleChange}
+              className="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm font-semibold focus:ring-2 focus:ring-legal-primary focus:border-transparent transition-all"
+            >
+              <option value="groq">Groq - Llama 3.1 8B Instant (Recommended)</option>
+              <option value="gemini">Google Gemini</option>
+              <option value="ollama">Local Ollama (Llama 3.2:3b)</option>
+              <option value="ollama-1b">Local Ollama (Llama 3.2:1b) - Fastest</option>
+            </select>
           {context.provider === 'ollama' && (
             <p className="text-[10px] text-slate-400 italic">
               * Requires Ollama running locally on port 11434

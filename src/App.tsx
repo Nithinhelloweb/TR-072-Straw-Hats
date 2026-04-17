@@ -6,6 +6,7 @@ import { UserContext, Message, LegalResponse } from './types';
 import { processLegalComplaint as processGemini } from './services/gemini.ts';
 import { processLegalComplaint as processOllama3b } from './services/ollama.ts';
 import { processLegalComplaint as processOllama1b } from './services/ollama-1b.ts';
+import { processLegalComplaint as processGroq } from './services/groq.ts';
 import { Menu, Info, X, Globe } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -15,7 +16,7 @@ export default function App() {
     industry: 'Construction',
     employment_type: 'contract',
     user_language: 'Hindi',
-    provider: 'gemini',
+    provider: 'groq',
     original_input: '',
     translated_input: '',
   });
@@ -53,7 +54,8 @@ export default function App() {
       };
 
       // 3. Process with AI based on provider
-      let processAI = processGemini;
+      let processAI = processGroq;
+      if (context.provider === 'gemini') processAI = processGemini;
       if (context.provider === 'ollama') processAI = processOllama3b;
       if (context.provider === 'ollama-1b') processAI = processOllama1b;
       const result = await processAI(updatedContext);
@@ -83,7 +85,7 @@ export default function App() {
         friendlyMessage = "Google Gemini API Key is invalid. Please check your .env.local file and ensure the VITE_GEMINI_API_KEY is correct.";
       } else if (error?.message === "OLLAMA_NOT_RUNNING") {
         friendlyMessage = "Local Ollama instance not found. Please ensure Ollama is running on your machine and you have pulled the 'llama3:latest' model.";
-      } else if (error?.message?.includes("Gemini Error:") || error?.message?.includes("Ollama Error:")) {
+      } else if (error?.message?.includes("Gemini Error:") || error?.message?.includes("Ollama Error:") || error?.message?.includes("Groq Error:")) {
         friendlyMessage = `Service ${error.message}. Please check your configuration.`;
       }
 
