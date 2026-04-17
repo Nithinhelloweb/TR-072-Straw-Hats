@@ -1,22 +1,19 @@
-@import "tailwindcss";
-
-@theme {
-  --color-legal-primary: #1e3a8a;
-  --color-legal-secondary: #0f172a;
-  --color-legal-accent: #10b981;
-  --color-legal-bg: #f8fafc;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-legal-bg text-slate-900 font-sans;
+    @apply bg-[#f8fafc] text-slate-900 font-sans;
   }
 }
 
-.chat-shadow {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
+@layer components {
+  .chat-shadow {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
 
-.glass-card {
-  @apply bg-white/80 backdrop-blur-md border border-slate-200;
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-slate-200;
+  }
 }

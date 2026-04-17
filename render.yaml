@@ -2,7 +2,7 @@ services:
   - type: static
     name: justicelink
     env: static
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
     headers:
       - path: /*
