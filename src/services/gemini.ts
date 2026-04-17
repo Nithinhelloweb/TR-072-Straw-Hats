@@ -11,23 +11,11 @@ Respond ONLY with valid JSON:
   "category": "wage_theft|unsafe_conditions|harassment|forced_labor|child_labor|discrimination|other",
   "legal_summary": "simple explanation",
   "laws": ["law1", "law2"],
-  "complaint_letter": "GOVERNMENT FORMAT LETTER",
+  "complaint_letter": "COMPLAINT BODY ONLY",
   "chat_response": "friendly response in user's language + English"
 }
 
-COMPLAINT LETTER MUST BE IN OFFICIAL INDIAN GOVERNMENT FORMAT:
-[DATE]
-
-To,
-The Labour Commissioner / Factories Inspector,
-[REGIONAL LABOUR OFFICE ADDRESS]
-[DISTRICT], [STATE]
-
-Subject: Complaint against [EMPLOYER NAME] regarding [SPECIFIC GRIEVANCE]
-
-Respected Sir/Madam,
-
-I, [WORKER FULL NAME], aged ____, residing at [RESIDENTIAL ADDRESS], Mobile No. ________ submit this complaint:
+COMPLAINT LETTER: OUTPUT ONLY THESE SECTIONS, NO HEADER/FOOTER:
 
 1. EMPLOYMENT DETAILS:
 Working since [DATE OF JOINING] as [DESIGNATION] at [ESTABLISHMENT NAME AND ADDRESS]. Monthly salary Rs. _______.
@@ -37,21 +25,6 @@ Working since [DATE OF JOINING] as [DESIGNATION] at [ESTABLISHMENT NAME AND ADDR
 
 3. PRAYER / RELIEF REQUESTED:
 [LIST SPECIFIC RELIEFS REQUESTED]
-
-I declare all facts are true. Submitting with supporting documents.
-
-Kindly register and take necessary legal action.
-
-Thanking you,
-
-Yours faithfully,
-_________________
-Signature of Complainant
-
-Enclosures:
-1. ID Card / Appointment letter
-2. Salary slips / bank statements
-3. Copy of complaint to employer
 
 Rules:
 - Auto-detect language, respond dual language (local + English)

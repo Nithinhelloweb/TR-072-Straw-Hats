@@ -68,9 +68,9 @@ export const LegalDashboard: React.FC<LegalDashboardProps> = ({ data, onClose })
       compress: true
     });
     
-    const margin = 20;
+    const margin = 25;
     const pageWidth = doc.internal.pageSize.getWidth();
-    let currentY = 20;
+    let currentY = 25;
 
     // Clean and sanitize text - remove unicode control characters and fix encoding
     const cleanText = (text: string): string => {
@@ -84,15 +84,90 @@ export const LegalDashboard: React.FC<LegalDashboardProps> = ({ data, onClose })
 
     const contentSummary = cleanText(lang === 'local' ? summary.local : summary.english);
     const contentLetter = cleanText(lang === 'local' ? letter.local : letter.english);
-    const title = lang === 'local' ? "Legal Report (Local Language)" : "Legal Report (English)";
 
-    // Use standard font that supports UTF-8 properly
+    // --- COMPLAINT LETTER PAGE (GOVERNMENT FORMAT) ---
+    doc.setFont("courier", "normal");
+    doc.setFontSize(11);
+
+    // 1. Date
+    const today = new Date().toLocaleDateString('en-IN');
+    doc.text(`Date: ${today}`, margin, currentY);
+    currentY += 10;
+
+    // 2. Official Header - Labour Commissioner
+    doc.text("To,", margin, currentY);
+    currentY += 5;
+    doc.text("The Labour Commissioner / Factories Inspector,", margin, currentY);
+    currentY += 5;
+    doc.text("Regional Labour Office,", margin, currentY);
+    currentY += 5;
+    doc.text("[District]", margin, currentY);
+    currentY += 5;
+    doc.text("[State]", margin, currentY);
+    currentY += 15;
+
+    // 3. Subject Line
+    doc.setFont("courier", "bold");
+    doc.text("SUBJECT: COMPLAINT REGARDING LABOUR LAW VIOLATION", margin, currentY);
+    doc.setFont("courier", "normal");
+    currentY += 15;
+
+    // 4. Salutation
+    doc.text("Respected Sir/Madam,", margin, currentY);
+    currentY += 12;
+
+    // 5. Complaint Content
+    const letterLines = doc.splitTextToSize(contentLetter, pageWidth - (margin * 2));
+    doc.text(letterLines, margin, currentY, {
+      baseline: 'top',
+      encoding: 'Unicode'
+    });
+    currentY += (letterLines.length * 5) + 15;
+
+    // 6. Declaration
+    doc.text("I hereby declare that all facts stated in this complaint are true and correct to the best of my knowledge.", margin, currentY);
+    currentY += 15;
+
+    // 7. Signature Block
+    doc.text("Thanking you,", margin, currentY);
+    currentY += 10;
+    doc.text("Yours faithfully,", margin, currentY);
+    currentY += 20;
+    doc.text("_____________________________", margin, currentY);
+    currentY += 5;
+    doc.text("Signature / Thumb Impression", margin, currentY);
+    currentY += 5;
+    doc.text("Name of Complainant", margin, currentY);
+    currentY += 5;
+    doc.text("Mobile No.: _________________", margin, currentY);
+    currentY += 5;
+    doc.text("Address: ___________________", margin, currentY);
+    currentY += 20;
+
+    // 8. Enclosures
+    doc.setFont("courier", "bold");
+    doc.text("ENCLOSURES:", margin, currentY);
+    doc.setFont("courier", "normal");
+    currentY += 7;
+    doc.text("1. Copy of ID Card / Appointment Letter", margin + 5, currentY);
+    currentY += 5;
+    doc.text("2. Copy of Salary Slips / Bank Statements", margin + 5, currentY);
+    currentY += 5;
+    doc.text("3. Copy of Written Complaint to Employer", margin + 5, currentY);
+    currentY += 5;
+    doc.text("4. Any other supporting evidence", margin + 5, currentY);
+    
+    // Add new page for summary and laws
+    doc.addPage();
+    currentY = 25;
+
+    // --- SUMMARY PAGE ---
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.setTextColor(51, 65, 85); 
     doc.text("JusticeLink", margin, currentY);
     doc.setFontSize(12);
-    doc.text(title, margin, currentY + 7);
+    doc.text("Legal Case Summary", margin, currentY + 7);
     currentY += 20;
 
     // Case Category
@@ -104,12 +179,11 @@ export const LegalDashboard: React.FC<LegalDashboardProps> = ({ data, onClose })
     // Legal Summary
     doc.setFontSize(14);
     doc.setTextColor(51, 65, 85);
-    doc.text("Summary:", margin, currentY);
+    doc.text("Legal Summary:", margin, currentY);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     currentY += 7;
     
-    // Use native text encoding for proper UTF-8 support
     const summaryLines = doc.splitTextToSize(contentSummary, pageWidth - (margin * 2));
     doc.text(summaryLines, margin, currentY, {
       baseline: 'top',
@@ -117,7 +191,7 @@ export const LegalDashboard: React.FC<LegalDashboardProps> = ({ data, onClose })
     });
     currentY += (summaryLines.length * 6) + 12;
 
-    // Laws
+    // Relevant Laws
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.text("Relevant Laws:", margin, currentY);
@@ -128,41 +202,16 @@ export const LegalDashboard: React.FC<LegalDashboardProps> = ({ data, onClose })
       doc.text(`• ${cleanText(law)}`, margin + 5, currentY, { encoding: 'Unicode' });
       currentY += 7;
     });
-    currentY += 12;
-
-    // Complaint Letter
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text("Formal Complaint:", margin, currentY);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    currentY += 7;
-    const letterLines = doc.splitTextToSize(contentLetter, pageWidth - (margin * 2));
-    
-    // Check if letter fits on page
-    if (currentY + (letterLines.length * 5) > doc.internal.pageSize.getHeight() - margin) {
-      doc.addPage();
-      currentY = 20;
-    }
-    
-    doc.text(letterLines, margin, currentY, {
-      baseline: 'top',
-      encoding: 'Unicode'
-    });
 
     // Disclaimer
-    currentY += (letterLines.length * 5) + 15;
-    if (currentY > doc.internal.pageSize.getHeight() - 20) {
-      doc.addPage();
-      currentY = 20;
-    }
+    currentY = doc.internal.pageSize.getHeight() - 30;
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
-    doc.text("Generated by JusticeLink AI. This is a preliminary report for informational purposes.", margin, currentY, {
+    doc.text("Generated by JusticeLink AI. This is a preliminary report for informational purposes. Please verify with legal counsel before submission.", margin, currentY, {
       encoding: 'Unicode'
     });
 
-    doc.save(`JusticeLink_${lang}_Report_${new Date().getTime()}.pdf`);
+    doc.save(`JusticeLink_Complaint_${new Date().getTime()}.pdf`);
   };
 
   const shareViaEmail = () => {
@@ -238,10 +287,37 @@ export const LegalDashboard: React.FC<LegalDashboardProps> = ({ data, onClose })
               </button>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-xl border-2 border-slate-100 shadow-sm font-serif text-sm text-slate-800 whitespace-pre-wrap leading-relaxed relative overflow-hidden font-hindi-support">
-             <div className="absolute top-0 right-0 w-16 h-16 bg-legal-primary/5 rounded-bl-full rotate-45 transform translate-x-8 -translate-y-8" />
-             {data.complaint_letter}
-          </div>
+           <div className="bg-white p-6 rounded-xl border-2 border-slate-100 shadow-sm font-mono text-sm text-slate-800 whitespace-pre-wrap leading-relaxed relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-legal-primary/5 rounded-bl-full rotate-45 transform translate-x-8 -translate-y-8" />
+              <div className="font-bold mb-4">GOVERNMENT COMPLAINT FORMAT</div>
+              <div className="text-xs text-slate-500 mb-4">Date: {new Date().toLocaleDateString('en-IN')}</div>
+              <div className="mb-4">
+To,
+The Labour Commissioner / Factories Inspector,
+Regional Labour Office,
+[District]
+[State]
+
+Subject: Complaint regarding labour law violation
+
+Respected Sir/Madam,</div>
+              {data.complaint_letter}
+              <div className="mt-6 font-bold">Declaration:</div>
+              <div className="text-xs mb-4">I hereby declare that all facts stated are true and correct.</div>
+              <div className="mt-4">Yours faithfully,</div>
+              <div className="mt-8">_________________________</div>
+              <div className="text-xs">Signature / Thumb Impression</div>
+              <div className="text-xs mt-1">Name: _________________</div>
+              <div className="text-xs mt-1">Mobile: _________________</div>
+              
+              <div className="mt-6 border-t pt-4 text-xs">
+                <div className="font-bold mb-2">ENCLOSURES:</div>
+                1. ID Card / Appointment letter<br/>
+                2. Salary slips / Bank statements<br/>
+                3. Copy of complaint to employer<br/>
+                4. Supporting evidence
+              </div>
+           </div>
         </section>
       </div>
 
