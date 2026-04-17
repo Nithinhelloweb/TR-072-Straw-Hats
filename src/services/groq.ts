@@ -68,18 +68,40 @@ INDIAN LABOR LAWS REFERENCE:
 - Interstate Migrant Workmen Act, 1979: Specific protections for migrant workers
 `;
 
+const getLanguageCode = (language: string): string => {
+  const mappings: Record<string, string> = {
+    'Hindi': 'hi',
+    'Bengali': 'bn',
+    'Telugu': 'te',
+    'Marathi': 'mr',
+    'Tamil': 'ta',
+    'Urdu': 'ur',
+    'Kannada': 'kn',
+    'Malayalam': 'ml',
+    'Odia': 'or',
+    'Punjabi': 'pa',
+    'Assamese': 'as',
+    'Bhojpuri': 'bho',
+    'English': 'en'
+  };
+  return mappings[language] || 'en';
+};
+
 export async function processLegalComplaint(context: UserContext): Promise<LegalResponse> {
   if (!GROQ_API_KEY) {
     throw new Error("Groq API key is not configured. Please set VITE_GROQ_API_KEY in your .env file.");
   }
 
-  const prompt = `
+   const prompt = `
 ORIGINAL USER INPUT: ${context.original_input}
 USER LANGUAGE: ${context.user_language}
 STATE: ${context.state}
 INDUSTRY: ${context.industry}
 EMPLOYMENT TYPE: ${context.employment_type}
 LEGAL CONTEXT: ${DEFAULT_LEGAL_CONTEXT}
+
+CRITICAL INSTRUCTION: Your entire chat_response_local must be in ${context.user_language} language.
+Do NOT mix languages. All parts of the response must be in ${context.user_language}.
 
 Respond ONLY with valid JSON matching the schema. No other text. Be a professional lawyer.
 `;

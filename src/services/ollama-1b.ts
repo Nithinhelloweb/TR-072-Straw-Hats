@@ -9,10 +9,12 @@ You are an AI Legal Assistant for Indian migrant workers.
 Respond ONLY with valid JSON:
 {
   "category": "wage_theft|unsafe_conditions|harassment|forced_labor|child_labor|discrimination|other",
-  "legal_summary": "simple explanation",
+  "legal_summary": "professional legal explanation with specific legal references",
   "laws": ["law1", "law2"],
-  "complaint_letter": "COMPLAINT BODY ONLY",
-  "chat_response": "friendly response in user's language + English"
+  "complaint_letter_local": "PROFESSIONAL COMPLAINT BODY ONLY in USER'S INPUT LANGUAGE",
+  "complaint_letter_english": "PROFESSIONAL COMPLAINT BODY ONLY in English",
+  "chat_response_local": "Full response in USER'S INPUT LANGUAGE",
+  "chat_response_english": "Full response in English"
 }
 
 COMPLAINT LETTER: OUTPUT ONLY THESE SECTIONS, NO HEADER/FOOTER:
@@ -27,7 +29,10 @@ Working since [DATE OF JOINING] as [DESIGNATION] at [ESTABLISHMENT NAME AND ADDR
 [LIST SPECIFIC RELIEFS REQUESTED]
 
 Rules:
-- Auto-detect language, respond dual language (local + English)
+- Auto-detect the EXACT language the user used in their input
+- Provide chat_response_local in THAT EXACT SAME LANGUAGE
+- Provide chat_response_english in proper English
+- Both responses must be complete, not partial
 - Use ONLY provided legal context
 - No extra text, markdown, or backticks
 - Keep responses concise
@@ -133,8 +138,12 @@ Respond ONLY with valid JSON matching the required schema. No other text.
       category: result.category || "other",
       legal_summary: cleanText(result.legal_summary || ""),
       laws: Array.isArray(result.laws) ? result.laws.map(cleanText) : [],
-      complaint_letter: cleanText(result.complaint_letter || ""),
-      chat_response: cleanText(result.chat_response || "")
+      complaint_letter: cleanText(result.complaint_letter || result.complaint_letter_english || ""),
+      complaint_letter_local: cleanText(result.complaint_letter_local || ""),
+      complaint_letter_english: cleanText(result.complaint_letter_english || ""),
+      chat_response: cleanText(result.chat_response || result.chat_response_english || ""),
+      chat_response_local: cleanText(result.chat_response_local || ""),
+      chat_response_english: cleanText(result.chat_response_english || "")
     } as LegalResponse;
     
   } catch (error: any) {

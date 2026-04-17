@@ -46,11 +46,11 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      // 2. Prepare context (Simulating translation by passing same content)
+      // 2. Prepare context
       const updatedContext: UserContext = {
         ...context,
         original_input: content,
-        translated_input: content, // Simulate translated input
+        translated_input: content,
       };
 
       // 3. Process with AI based on provider
@@ -64,7 +64,9 @@ export default function App() {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: result.chat_response,
+        content: context.user_language === 'English' 
+          ? result.chat_response_english || result.chat_response 
+          : result.chat_response_local || result.chat_response,
         legalData: result,
         timestamp: Date.now(),
       };
