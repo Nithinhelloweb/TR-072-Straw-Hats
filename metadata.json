@@ -1,0 +1,8 @@
+{
+  "name": "JusticeLink",
+  "description": "An advanced multilingual AI Legal Assistant designed to support migrant workers in India with legal advice and complaint letter generation.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": []
+}
